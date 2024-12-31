@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Creating IAM Roles to allows AWS services call other services on your behalf
+
+Resources:
+  EKSCluster:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Description: Allows the cluster Kubernetes control plane to manage AWS resources on your behalf
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'eks.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AmazonEKSClusterPolicy'  
+      RoleName: 'cicd-project-EKSCluster' 
+  EKSNodeGroup:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Description: Allows EC2 instances to call AWS services on your behalf
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'ec2.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly'  
+        - 'arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy'  
+        - 'arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy'  
+        - 'arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess'  
+        - 'arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy'  
+        - 'arn:aws:iam::aws:policy/AmazonElasticContainerRegistryPublicReadOnly'  
+      RoleName: 'cicd-project-EKSNodeGroup'
+  JenkinsSlave:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Description: Allows EC2 instances to call AWS services on your behalf
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'ec2.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess'  
+      RoleName: 'cicd-project-JenkinsSlave' 
+
+Outputs:
+  EKSClusterARN:
+     Description: ARN for EKS CLuster role
+     Value: !GetAtt EKSCluster.Arn
+     Export:
+      Name: EKSClusterARN
+  EKSNodeGroupARN:
+     Description: ARN for EKS CLuster role
+     Value: !GetAtt EKSNodeGroup.Arn
+     Export:
+      Name: EKSNodeGroupARN

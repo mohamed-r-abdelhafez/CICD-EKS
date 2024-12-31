@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC to operate in
+
+Resources:
+  EKSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: EKSSecurityGroup
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0 # As best practices make it your ip or ip address for your jump server  
+
+    
+
+  NodeGroupSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: NodeGroupSecurityGroup
+      VpcId: !Ref VpcId
+
+
+  JenkinsMasterSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: JenkinsMasterSecurityGroup
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0 # As best practices make it your ip or ip address for your jump server 
+      - IpProtocol: tcp
+        FromPort: 8080
+        ToPort: 8080
+        CidrIp: 0.0.0.0/0 # As best practices make it your ip or ip address for your jump server 
+
+
+
+  JenkinsSlaveSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: JenkinsSlaveSecurityGroup
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0 # As best practices make it your ip or ip address for your jump server 
+      
+
+Outputs:
+  EKSSecurityGroupID:
+    Description: The ID  of EKS Cluster Security Group
+    Value: !GetAtt EKSSecurityGroup.GroupId
+    Export:
+      Name: EKSSecurityGroupID
+  NodeGroupSecurityGroupID:
+    Description: The ID  of NodeGroup Security Group
+    Value: !GetAtt NodeGroupSecurityGroup.GroupId
+    Export:
+      Name: NodeGroupSecurityGroupID
+  JenkinsMasterSecurityGroupID:
+    Description: The ID  of Jenkins Master Security Group
+    Value: !GetAtt JenkinsMasterSecurityGroup.GroupId
+    Export:
+      Name: JenkinsMasterSecurityGroup
+  JenkinsSlaveSecurityGroupID:
+    Description: The ID  of Jenkins Slave Security Group
+    Value: !GetAtt JenkinsSlaveSecurityGroup.GroupId
+    Export:
+      Name: JenkinsSlaveSecurityGroup

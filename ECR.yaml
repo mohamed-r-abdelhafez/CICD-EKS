@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Creating AWS ECR Repository
+
+Resources:
+  MyRepo:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: 'cicd-project-repo'
+      EmptyOnDelete: true
+      EncryptionConfiguration:
+           EncryptionType: AES256
+      ImageScanningConfiguration:
+           ScanOnPush: false
+      ImageTagMutability: MUTABLE
+
+
+Outputs:
+  RepositoryURI:
+    Description: The URI of the created ECR repository
+    Value: !GetAtt MyRepo.RepositoryUri
+    

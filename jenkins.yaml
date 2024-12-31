@@ -1,0 +1,105 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template to create an Jenkins Master and Slave
+
+Parameters:
+  InstanceType:
+    Description: EC2 Instance Type
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+         - t2.micro
+         - t2.small
+         - t2.medium
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC to operate in
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: List of subnet IDs
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: EC2 key pair to associate with the worker nodes
+
+Resources:
+  JenkinsMaster:
+    Type: AWS::EC2::Instance
+    Metadata:
+         AWS::CloudFormation::Init:
+          config:
+            packages:
+              yum:
+                java-17-amazon-corretto: []
+                git: []
+            files:
+              /etc/yum.repos.d/jenkins.repo:
+                content: |
+                  [jenkins]
+                  name=Jenkins-stable
+                  baseurl=http://pkg.jenkins.io/redhat-stable/
+                  gpgcheck=1
+                  gpgkey=https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+                mode: "000644"
+                owner: root
+                group: root
+            commands:
+              add-jenkins:
+                command: yum install jenkins -y
+            services:
+              sysvinit:
+                jenkins:
+                  enabled: true
+                  ensureRunning: true
+
+    CreationPolicy:
+      ResourceSignal:
+        Timeout: PT15M
+    Properties:
+      InstanceType: !Ref InstanceType
+      SubnetId: !Ref SubnetId
+      ImageId: ami-0fd05997b4dff7aac 
+      KeyName: !Ref KeyName
+      BlockDeviceMappings:
+      - DeviceName: '/dev/xvda'
+        Ebs:
+          VolumeType: "gp3"
+          Iops: "3000"
+          DeleteOnTermination: "true"
+          VolumeSize: "20"
+      SecurityGroupIds:
+      - !ImportValue JenkinsMasterSecurityGroup
+      UserData: 
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            yum update -y
+            yum install -y aws-cfn-bootstrap
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource JenkinsMaster --region ${AWS::Region}
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource JenkinsMaster --region ${AWS::Region}      
+  JenkinsSlave:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      SubnetId: !Ref SubnetId
+      ImageId: ami-0fd05997b4dff7aac 
+      KeyName: !Ref KeyName
+      BlockDeviceMappings:
+      - DeviceName: '/dev/xvda'
+        Ebs:
+          VolumeType: "gp3"
+          Iops: "3000"
+          DeleteOnTermination: "true"
+          VolumeSize: "10"
+      SecurityGroupIds:
+      - !ImportValue JenkinsSlaveSecurityGroup
+      UserData: 
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            sudo yum update -y
+            sudo dnf install java-17-amazon-corretto -y
+
+
+Outputs:
+  WebURL:
+    Description: URL to access Jenkins web interface
+    Value: !Sub "http://${JenkinsMaster.PublicIp}:8080"
