@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Template to create an Jenkins Master and Slave
+Description: Template to create an Jenkins Master and Slave with needed configuration.
 
 Parameters:
   InstanceType:
@@ -77,6 +77,54 @@ Resources:
             /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource JenkinsMaster --region ${AWS::Region}      
   JenkinsSlave:
     Type: AWS::EC2::Instance
+    Metadata:
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+              yum:
+                java-17-amazon-corretto: []
+                git: []
+                docker: []
+
+          files:
+            /tmp/kubectl_setup.sh:
+              content: |
+                #!/bin/bash
+                curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.31.2/2024-11-15/bin/linux/amd64/kubectl
+                chmod +x ./kubectl
+                mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
+                echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc
+              mode: "000755"
+            /tmp/helm_install.sh:
+              content: |
+                #!/bin/bash
+                curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+                chmod 700 get_helm.sh
+                ./get_helm.sh
+              mode: "000755"
+            /tmp/maven_install.sh:
+              content: | 
+                #!/bin/bash
+                sudo wget https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+                sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+                sudo yum install -y apache-maven 
+              mode: "000755"
+          commands:
+            01-InstallKubectl:
+              command: "bash /tmp/kubectl_setup.sh"
+            02-Add_ec2-user_DockerGroup:
+              command: "sudo usermod -a -G docker ec2-user"
+            03-InsallHelm:
+              command: "bash /tmp/helm_install.sh"
+            04-InstallMaven:
+              command: "bash /tmp/maven_install.sh"
+          services:
+            sysvinit:
+              docker:
+                enabled: true
+                ensureRunning: true
+
+                
     Properties:
       InstanceType: !Ref InstanceType
       SubnetId: !Ref SubnetId
@@ -96,8 +144,16 @@ Resources:
           !Sub |
             #!/bin/bash -xe
             sudo yum update -y
-            sudo dnf install java-17-amazon-corretto -y
+            yum install -y aws-cfn-bootstrap
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource JenkinsSlave --region ${AWS::Region}
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource JenkinsSlave --region ${AWS::Region}      
 
+  JenkinsSlaveInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+      - !ImportValue  JenkinsSlaveARN
 
 Outputs:
   WebURL:

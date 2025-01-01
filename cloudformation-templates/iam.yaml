@@ -61,3 +61,8 @@ Outputs:
      Value: !GetAtt EKSNodeGroup.Arn
      Export:
       Name: EKSNodeGroupARN
+  JenkinsSlaveARN:
+     Description: ARN for EJenkinsSlave role
+     Value: !GetAtt JenkinsSlave.Arn
+     Export:
+      Name: JenkinsSlaveARN
