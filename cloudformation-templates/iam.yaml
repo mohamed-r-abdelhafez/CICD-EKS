@@ -38,7 +38,7 @@ Resources:
   JenkinsSlave:
     Type: 'AWS::IAM::Role'
     Properties:
-      Description: Allows EC2 instances to call AWS services on your behalf
+      Description: Allows JenkinsSlave instances to access ECR  
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:

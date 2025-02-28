@@ -113,11 +113,14 @@ Resources:
             01-InstallKubectl:
               command: "bash /tmp/kubectl_setup.sh"
             02-Add_ec2-user_DockerGroup:
-              command: "sudo usermod -a -G docker ec2-user"
+              command: "sudo usermod -aG docker ec2-user"
             03-InsallHelm:
               command: "bash /tmp/helm_install.sh"
             04-InstallMaven:
               command: "bash /tmp/maven_install.sh"
+            05-Add_Jenkins-user_DockerGroup:
+              command: "sudo usermod -aG docker jenkins"
+ 
           services:
             sysvinit:
               docker:
@@ -130,6 +133,7 @@ Resources:
       SubnetId: !Ref SubnetId
       ImageId: ami-0fd05997b4dff7aac 
       KeyName: !Ref KeyName
+      IamInstanceProfile: !Ref JenkinsSlaveInstanceProfile
       BlockDeviceMappings:
       - DeviceName: '/dev/xvda'
         Ebs:

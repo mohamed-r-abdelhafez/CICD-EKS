@@ -2,10 +2,30 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Creating AWS ECR Repository
 
 Resources:
-  MyRepo:
+  app:
     Type: AWS::ECR::Repository
     Properties:
-      RepositoryName: 'cicd-project-repo'
+      RepositoryName: 'cicd-project-app'
+      EmptyOnDelete: true
+      EncryptionConfiguration:
+           EncryptionType: AES256
+      ImageScanningConfiguration:
+           ScanOnPush: false
+      ImageTagMutability: MUTABLE
+  db:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: 'cicd-project-db'
+      EmptyOnDelete: true
+      EncryptionConfiguration:
+           EncryptionType: AES256
+      ImageScanningConfiguration:
+           ScanOnPush: false
+      ImageTagMutability: MUTABLE
+  web:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: 'cicd-project-web'
       EmptyOnDelete: true
       EncryptionConfiguration:
            EncryptionType: AES256
@@ -17,5 +37,5 @@ Resources:
 Outputs:
   RepositoryURI:
     Description: The URI of the created ECR repository
-    Value: !GetAtt MyRepo.RepositoryUri
+    Value: !GetAtt app.RepositoryUri
     
