@@ -15,28 +15,28 @@ spec:
         app: vpro-db
     spec:
       containers:
-        - name: vprodb
-          image: mohamedabdelhafez/vprodb
+        - name: {{ .Values.mysql.containername }}
+          image: {{ .Values.mysql.image }}
           volumeMounts:
-            - mountPath: /var/lib/mysql
+            - mountPath: {{ .Values.mysql.mountPath }}
               name: vpro-db-data
           ports:
-            - containerPort: 3306
+            - containerPort: {{ .Values.mysql.servicePort }}
               name: vprodb-port
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysecret
-                  key: db-pass
+                  name: {{ .Values.mysql.secretname }}
+                  key: {{ .Values.mysql.secretkey }}
       volumes:
         - name: vpro-db-data
           persistentVolumeClaim:
-            claimName: db-pvc
+            claimName: mysql-pvc
       initContainers:
         - name: busybox
           image: busy
           args: ["rm", "-rf", "/var/lib/mysql/lost+found"]
           volumeMounts:
-            - mountPath: //var/lib/mysql
+            - mountPath: {{ .Values.mysql.mountPath }}
               name: vpro-db-data

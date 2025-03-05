@@ -15,10 +15,10 @@ spec:
         app: vpro-mc
     spec:
       containers:
-        - name: vpro-mc
-          image: memcached
+        - name: {{ .Values.memcached.containername }}
+          image: {{ .Values.memcached.image }}
           ports:
-            - containerPort: 11211
+            - containerPort: {{ .Values.memcached.servicePort }}
               name: vpromc-port
 
     

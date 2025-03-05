@@ -16,16 +16,16 @@ spec:
         app: vpro-mq
     spec:
       containers:
-      - image:  rabbitmq
-        name:  vpromq
+      - image:  {{ .value.rabbitmq.image }}
+        name:  {{ .value.rabbitmq.containername }}
         ports:
-          - containerPort: 5672
+          - containerPort: {{ .value.rabbitmq.servicePort }}
             name: vpromq-port
         env:
         - name:  RABBITMQ_DEFAULT_PASS
           valueFrom:
             secretKeyRef:
-              name: mysecret
-              key: rmq-pass
+              name: {{ .value.rabbitmq.secretname }}
+              key: {{ .value.rabbitmq.secretkey }}
         - name: RABBITMQ_DEFAULT_USER
-          value: "guest"
+          value: {{ .value.rabbitmq.user }}

@@ -8,7 +8,7 @@ spec:
   selector:
     app: vpro-mq
   ports:
-    - port: 5672
-      targetPort: vpromq-port
+    - port: {{ .Values.rabbitmq.servicePort }}
+      targetPort: {{ .Values.rabbitmq.servicePort }}
       protocol: TCP
   type: ClusterIP

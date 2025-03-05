@@ -43,8 +43,8 @@ Resources:
         SecurityGroupIds:
              - !ImportValue EKSSecurityGroupID
         SubnetIds: !Ref SubnetId
-        EndpointPublicAccess: false
-        EndpointPrivateAccess: true
+        EndpointPublicAccess: true
+        EndpointPrivateAccess: false
 
   NodeGroup:
     Type: AWS::EKS::Nodegroup

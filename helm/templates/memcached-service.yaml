@@ -8,7 +8,7 @@ spec:
   selector:
     app: vpro-mc
   ports:
-    - port: 11211
-      targetPort: vpromc-port
+    - port: {{ .Values.memcached.servicePort }}
+      targetPort: {{ .Values.memcached.servicePort }}
       protocol: TCP
   type: ClusterIP

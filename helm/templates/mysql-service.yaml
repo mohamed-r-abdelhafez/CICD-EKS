@@ -6,9 +6,9 @@ metadata:
     app: vpro-db
 spec:
   selector:
-    app: vpro-
+    app: vpro-db
   ports:
-    - port: 3306
-      targetPort: vprodb-port
+    - port: {{ .Values.mysql.servicePort }}
+      targetPort: {{ .Values.mysql.servicePort }}
       protocol: TCP
   type: ClusterIP

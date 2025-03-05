@@ -1,0 +1,33 @@
+app:
+  servicePort: 8080
+  image: 084375589021.dkr.ecr.ap-south-1.amazonaws.com/cicd-project-app
+  containername: vpro-app
+  imagePolicy: Always
+ 
+ 
+ 
+ mysql:
+  servicePort: 3306
+  image: 084375589021.dkr.ecr.ap-south-1.amazonaws.com/cicd-project-db
+  mountPath: /var/lib/mysql
+  password: vprodbpass
+  secretname: mysecret
+  containername: vprodb
+  secretkey: db-pass
+
+rabbitmq:
+  password: guest
+  servicePort: 5672
+  containername: vpromq
+  image: rabbitmq
+  user: guest
+  secretname: mysecret
+  secretname: rmq-pass
+
+memcached:
+  containername: vprodb
+  image: memcached
+  servicePort: 11211
+
+ingress:
+  host: 
