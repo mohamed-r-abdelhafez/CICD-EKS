@@ -4,8 +4,6 @@ app:
   containername: vpro-app
   imagePolicy: Always
  
- 
- 
  mysql:
   servicePort: 3306
   image: 084375589021.dkr.ecr.ap-south-1.amazonaws.com/cicd-project-db

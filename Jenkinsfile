@@ -4,6 +4,7 @@ pipeline{
     }
     environment{
         AWS_REGION = "ap-south-1"
+        EKS_CLUSTER_NAME = "cicd-project"
         REGISTRY_PATH = "084375589021.dkr.ecr.ap-south-1.amazonaws.com"
         APP_ECR_REPO = "cicd-project-app"
         DB_ECR_REPO = "cicd-project-db"
@@ -57,6 +58,33 @@ pipeline{
                 }
             }
 
+        }
+        stage('Deploy to EKS using Helm') {
+            steps {
+                script {
+                    sh "aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME"
+
+                    sh """
+                    helm upgrade --install vpro-app ./helm \\
+                        --set app.image=${REGISTRY_PATH}/${APP_ECR_REPO} \\
+                        --set app.tag=${IMAGE_TAG} \\
+                        --set db.image=${REGISTRY_PATH}/${DB_ECR_REPO} \\
+                        --set db.tag=${IMAGE_TAG} \\
+                        --set web.image=${REGISTRY_PATH}/${WEB_ECR_REPO} \\
+                        --set web.tag=${IMAGE_TAG}
+                    """
+                    sh "kubectl get svc"
+
+                }
+            }
+            post{
+                success {
+                     echo 'Deployment Successful!'
+                }
+                failure {
+                     echo 'Deployment Failed!'
+                }
+            }
         }
 
 

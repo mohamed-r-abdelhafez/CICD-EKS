@@ -52,7 +52,7 @@ Resources:
       RemoteAccess:
            Ec2SshKey: !Ref KeyName
            SourceSecurityGroups:
-                - !ImportValue NodeGroupSecurityGroup
+                - !ImportValue NodeGroupSecurityGroupID
       CapacityType: ON_DEMAND
       AmiType: AL2_x86_64
       ClusterName: !Ref ClusterName
@@ -65,11 +65,15 @@ Resources:
         MaxSize: 10
       InstanceTypes:
         - !Ref NodeInstanceType
-  
+    DependsOn:
+         -  EKSCluster 
   ObservabilityAddon:
     Type: AWS::EKS::Addon
     Properties:
          ClusterName: !Ref ClusterName
          AddonName: "amazon-cloudwatch-observability"
+    DependsOn:
+         - EKSCluster
+         - NodeGroup
          
  

@@ -31,19 +31,19 @@ Resources:
                 java-17-amazon-corretto: []
                 git: []
             files:
-              /etc/yum.repos.d/jenkins.repo:
+              /tmp/jenkins.sh:
                 content: |
-                  [jenkins]
-                  name=Jenkins-stable
-                  baseurl=http://pkg.jenkins.io/redhat-stable/
-                  gpgcheck=1
-                  gpgkey=https://pkg.jenkins.io/redhat-stable/jenkins.io.key
-                mode: "000644"
-                owner: root
-                group: root
+                  #!/bin/bash
+                  sudo yum update -y
+                  sudo wget -O /etc/yum.repos.d/jenkins.repo \
+                  https://pkg.jenkins.io/redhat-stable/jenkins.repo
+                  sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+                  sudo yum upgrade
+                  sudo yum install jenkins -y
+                mode: "000755"
             commands:
               add-jenkins:
-                command: yum install jenkins -y
+                command: "bash /tmp/jenkins.sh"
             services:
               sysvinit:
                 jenkins:
@@ -155,9 +155,10 @@ Resources:
   JenkinsSlaveInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
+      InstanceProfileName: jenkins_slave
       Path: /
       Roles:
-      - !ImportValue  JenkinsSlaveARN
+      - cicd-project-JenkinsSlave
 
 Outputs:
   WebURL:
