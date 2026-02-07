@@ -5,11 +5,12 @@ Parameters:
   InstanceType:
     Description: EC2 Instance Type
     Type: String
-    Default: t2.micro
+    Default: t3.micro
     AllowedValues:
-         - t2.micro
-         - t2.small
-         - t2.medium
+         - t3.micro
+         - t3.small
+         - c7i-flex.large
+         - m7i-flex.large
   VpcId:
     Type: AWS::EC2::VPC::Id
     Description: VPC to operate in
