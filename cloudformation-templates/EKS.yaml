@@ -20,11 +20,12 @@ Parameters:
   NodeInstanceType:
     Description: EC2 instance type for the worker nodes
     Type: String
-    Default: t2.micro
+    Default: t3.micro
     AllowedValues:
-    - t2.micro
-    - t2.small
-    - t2.medium
+    - t3.micro
+    - t3.small
+    - c7i-flex.large
+    - m7i-flex.large
   DesiredCapacity:
     Type: Number
     Description: Desired number of worker nodes

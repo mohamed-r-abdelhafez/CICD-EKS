@@ -2,8 +2,17 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Template to create an Jenkins Master and Slave with needed configuration.
 
 Parameters:
-  InstanceType:
-    Description: EC2 Instance Type
+  JenkinsMasterInstanceType:
+    Description: EC2 Instance Type for Jenkins Master
+    Type: String
+    Default: t3.micro
+    AllowedValues:
+         - t3.micro
+         - t3.small
+         - c7i-flex.large
+         - m7i-flex.large
+  JenkinsSlaveInstanceType:
+    Description: EC2 Instance Type for Jenkins Slave
     Type: String
     Default: t3.micro
     AllowedValues:
@@ -55,7 +64,7 @@ Resources:
       ResourceSignal:
         Timeout: PT15M
     Properties:
-      InstanceType: !Ref InstanceType
+      InstanceType: !Ref JenkinsMasterInstanceType
       SubnetId: !Ref SubnetId
       ImageId: ami-0fd05997b4dff7aac 
       KeyName: !Ref KeyName
@@ -130,7 +139,7 @@ Resources:
 
                 
     Properties:
-      InstanceType: !Ref InstanceType
+      InstanceType: !Ref JenkinsSlaveInstanceType
       SubnetId: !Ref SubnetId
       ImageId: ami-0fd05997b4dff7aac 
       KeyName: !Ref KeyName
