@@ -6,7 +6,7 @@ spec:
   selector:
     app: vpro-app
   ports:
-    - port: {{ .values.app.servicePort }}
-      targetPort: {{ .values.app.servicePort }}
+    - port: {{ .Values.app.servicePort }}
+      targetPort: {{ .Values.app.servicePort }}
       protocol: TCP
   type: LoadBalancer

@@ -7,7 +7,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: {{ .values.ingress.host }}
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
         - path: /
@@ -16,6 +16,6 @@ spec:
             service:
               name: vproapp-service
               port: 
-                number: {{ .values.app.servicePort }}
+                number: {{ .Values.app.servicePort }}
                 
                 

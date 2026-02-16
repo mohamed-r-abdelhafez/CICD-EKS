@@ -15,11 +15,11 @@ spec:
         app: vpro-app
     spec:
       containers:
-        - name: {{ .values.app.containername }}
-          image: {{ .values.app.image }}
-          imagePullPolicy: {{ .values.app.imagePolicy }}
+        - name: {{ .Values.app.containername }}
+          image: {{ .Values.app.image }}
+          imagePullPolicy: {{ .Values.app.imagePolicy }}
           ports:
-            - containerPort: { .values.app.servicePort }}
+            - containerPort: {{ .Values.app.servicePort }}
               name: vproapp-port
       initContainers:
         - name:  init-mydb
