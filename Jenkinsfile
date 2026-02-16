@@ -34,7 +34,8 @@ pipeline{
 
         stage("docker build and push"){
             steps{
-                sh '''
+                script{
+            
                 def app_image = "${REGISTRY_PATH}/${APP_ECR_REPO}:${IMAGE_TAG}"
                 def db_image = "${REGISTRY_PATH}/${DB_ECR_REPO}:${IMAGE_TAG}"
                 def web_image = "${REGISTRY_PATH}/${WEB_ECR_REPO}:${IMAGE_TAG}"
@@ -45,9 +46,10 @@ pipeline{
 
                 sh "docker push ${app_image}"
                 sh "docker push ${db_image}"
-                sh "docker push ${web_image}
+                sh "docker push ${web_image}"
 
-                '''
+                
+                }   
             }
             post{
                 success{

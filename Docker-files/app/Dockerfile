@@ -1,5 +1,5 @@
-FROM openjdk:11 AS BUILD_IMAGE
-RUN apt update && apt install maven -y
+FROM maven:3.8.4-openjdk-11 AS BUILD_IMAGE
+RUN apt update 
 RUN git clone https://github.com/mohamed-r-abdelhafez/CICD-EKS.git
 RUN cd CICD-EKS && mvn install
 
