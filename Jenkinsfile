@@ -5,7 +5,7 @@ pipeline{
     environment{
         AWS_REGION = "ap-south-1"
         EKS_CLUSTER_NAME = "cicd-project"
-        REGISTRY_PATH = "084375589021.dkr.ecr.ap-south-1.amazonaws.com"
+        REGISTRY_PATH = "845087560966.dkr.ecr.ap-south-1.amazonaws.com"
         APP_ECR_REPO = "cicd-project-app"
         DB_ECR_REPO = "cicd-project-db"
         WEB_ECR_REPO = "cicd-project-web"
