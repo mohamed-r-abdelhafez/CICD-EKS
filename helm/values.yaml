@@ -11,6 +11,7 @@ mysql:
   password: vprodbpass
   secretname: mysecret
   containername: vprodb
+  secretname: mysecret
   secretkey: db-pass
 
 rabbitmq:
@@ -20,7 +21,7 @@ rabbitmq:
   image: rabbitmq
   user: guest
   secretname: mysecret
-  secretname: rmq-pass
+  secretkey: rmq-pass
 
 memcached:
   containername: vprodb
