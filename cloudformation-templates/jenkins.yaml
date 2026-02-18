@@ -95,6 +95,7 @@ Resources:
                 java-17-amazon-corretto: []
                 git: []
                 docker: []
+                maven: []
 
           files:
             /tmp/kubectl_setup.sh:
@@ -112,13 +113,6 @@ Resources:
                 chmod 700 get_helm.sh
                 ./get_helm.sh
               mode: "000755"
-            /tmp/maven_install.sh:
-              content: | 
-                #!/bin/bash
-                sudo wget https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
-                sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
-                sudo yum install -y apache-maven 
-              mode: "000755"
           commands:
             01-InstallKubectl:
               command: "bash /tmp/kubectl_setup.sh"
@@ -126,8 +120,6 @@ Resources:
               command: "sudo usermod -aG docker ec2-user"
             03-InsallHelm:
               command: "bash /tmp/helm_install.sh"
-            04-InstallMaven:
-              command: "bash /tmp/maven_install.sh"
             05-Add_Jenkins-user_DockerGroup:
               command: "sudo usermod -aG docker jenkins"
  

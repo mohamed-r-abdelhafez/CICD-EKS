@@ -47,7 +47,8 @@ Resources:
               Service: 'ec2.amazonaws.com'
             Action: 'sts:AssumeRole'
       ManagedPolicyArns:
-        - 'arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess'  
+        - 'arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess' 
+        - 'arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy'  
       RoleName: 'cicd-project-JenkinsSlave' 
 
 Outputs:
