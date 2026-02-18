@@ -6,7 +6,7 @@ app:
  
 mysql:
   servicePort: 3306
-  image: 0845087560966.dkr.ecr.ap-south-1.amazonaws.com/cicd-project-db
+  image: 845087560966.dkr.ecr.ap-south-1.amazonaws.com/cicd-project-db
   mountPath: /var/lib/mysql
   password: vprodbpass
   secretname: mysecret
@@ -28,5 +28,3 @@ memcached:
   image: memcached
   servicePort: 11211
 
-ingress:
-  host: 
