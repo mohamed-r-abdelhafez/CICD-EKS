@@ -43,10 +43,21 @@ pipeline{
                 sh "docker build -t ${app_image} ./Docker-files/app/"
                 sh "docker build -t ${db_image} ./Docker-files/db/"
                 sh "docker build -t ${web_image} ./Docker-files/web/"
-
+                
+                sh "docker tag ${app_image} ${REGISTRY_PATH}/${APP_ECR_REPO}:latest"
                 sh "docker push ${app_image}"
+                sh "docker push ${REGISTRY_PATH}/${APP_ECR_REPO}:latest"
+                
+                sh "docker tag ${db_image} ${REGISTRY_PATH}/${DB_ECR_REPO}:latest"
                 sh "docker push ${db_image}"
+                sh "docker push ${REGISTRY_PATH}/${DB_ECR_REPO}:latest"
+                
+                
+                sh "docker tag ${web_image} ${REGISTRY_PATH}/${WEB_ECR_REPO}:latest"
                 sh "docker push ${web_image}"
+                sh "docker push ${REGISTRY_PATH}/${WEB_ECR_REPO}:latest"
+                
+          
 
                 
                 }   
